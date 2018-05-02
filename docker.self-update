@@ -133,7 +133,7 @@ declare -A versions
 
 repos["docker-compose"]='https://github.com/docker/compose'
 # little trick here, for version 0.12.2 tag is v0.12.2 (notice leading v)
-releases["docker-compose"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
+releases["docker-compose"]='"${_REPO}/releases/download/${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
 versions["docker-compose"]='--version'
 
 repos["docker-machine"]='https://github.com/docker/machine'
@@ -145,6 +145,10 @@ repos["kompose"]='https://github.com/kubernetes/kompose'
 # kompose has 3 tweaks: 0.12.2 is v0.12.2, ends with amd64, and uname is lowercase only
 releases["kompose"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
 versions["kompose"]='version'
+
+repos["minikube"]='https://github.com/kubernetes/minikube'
+releases["minikube"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
+versions["minikube"]='version'
 
 ACTION_NOTHING='do nothing'
 ACTION_INSTALL='install'
