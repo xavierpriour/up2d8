@@ -150,6 +150,11 @@ repos["minikube"]='https://github.com/kubernetes/minikube'
 releases["minikube"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
 versions["minikube"]='version'
 
+repos["ctop"]='https://github.com/bcicen/ctop'
+# https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64
+releases["ctop"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
+versions["ctop"]='-v'
+
 ACTION_NOTHING='do nothing'
 ACTION_INSTALL='install'
 ACTION_UPDATE='update'
@@ -168,7 +173,11 @@ decide_action() {
   TARGET_VERSION=$3
   # todo crash if missing an arg
   if [ -z "$TARGET_VERSION" ]; then
-    TARGET_VERSION=`git ls-remote $REPO | grep refs/tags | grep -oP "[0-9]+\.[0-9][0-9]+\.[0-9]+$" | tail -n 1`
+    TARGET_VERSION=`git ls-remote $REPO | grep refs/tags | grep -oP "[0-9]+\.[0-9]+\.[0-9]+$" | tail -n 1`
+  fi
+  if [ -z "$TARGET_VERSION" ]; then
+    echo "Unable to determine target version to download for '$CMD' in repo '$REPO', this is a fatal bug. Please report it to the author."
+    exit 1
   fi
   if [ `which $CMD` ]; then
     _version_toggle=${versions["$CMD"]}
@@ -202,6 +211,7 @@ download() {
   filenamePattern=${releases["$_CMD"]}
   eval "_URL=$filenamePattern"
   echo "... download $_URL into $_dir"
+  mkdir -p "$_dir"
   _CURL=`curl --fail -L $_URL -o $_dir/$_CMD.tmp`
   if [ $? -ne 0 ]; then
     echo "ERROR: unable to download specified version, please check that url is valid: $_URL"
@@ -238,6 +248,7 @@ do
     echo "Unable to determine repo to query for command '$command_to_up', are you sure this is a valid one?"
     exit 1
   fi
+
   # trigger update
   decide_action $command_to_up $repo $version_to_up
 
@@ -249,6 +260,10 @@ do
         exit 1
       fi
       bin=$_arg_bin
+
+#      echo "download $command_to_up $TARGET_VERSION $repo $dir"
+#      exit 99
+
       download $command_to_up $TARGET_VERSION $repo $dir
       if [ -n "$bin" ]; then
         echo "... link to $bin/$command_to_up"
