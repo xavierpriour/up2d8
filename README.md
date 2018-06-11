@@ -18,8 +18,8 @@ must be in the path
 
 Install
 
-- `git clone https://github.com/xavierpriour/docker-update.git`
-- `chmod +x ./docker-update/up2d8`
+- `git clone https://github.com/xavierpriour/up2d8.git`
+- `chmod +x ./up2d8/up2d8`
 - add to path
 
 ## why?
