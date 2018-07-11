@@ -155,6 +155,9 @@ repos["ctop"]='https://github.com/bcicen/ctop'
 releases["ctop"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
 versions["ctop"]='-v'
 
+repos["helm"]='https://github.com/kubernetes/helm'
+releases["helm"]='https://storage.googleapis.com/kubernetes-helm/helm-v${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64.tar.gz'
+
 ACTION_NOTHING='do nothing'
 ACTION_INSTALL='install'
 ACTION_UPDATE='update'
@@ -223,11 +226,23 @@ download() {
   _CURL=`curl --fail -L $_URL -o $_dir/$_CMD.tmp`
   if [ $? -ne 0 ]; then
     echo "ERROR: unable to download specified version, please check that url is valid: $_URL"
-#    rm $_dir/$_CMD.tmp
+#    rm "$_dir/$_CMD.tmp"
   else
-    # all ok, we can replace existing
-    chmod +x "$_dir/$_CMD.tmp"
-    mv "$_dir/$_CMD.tmp" "$_dir/$_CMD"
+    # special case: if we had a tarzipped file
+    # if we had a tarzipped url...
+    if [[ "$_URL" == *.tar.gz ]]; then
+      _file_archive="$_dir/$_CMD.tar.gz"
+      # add back tarzip to filename
+      mv "$_dir/$_CMD.tmp" "$_file_archive"
+      # find file matching command name and extract WITHOUT folders
+      tar -zxf "$_file_archive" --directory="$_dir" --no-anchored $_CMD --transform='s/.*\///'
+      # now remove the archive file
+      rm "$_file_archive"
+    else
+      # all ok, we can replace existing
+      chmod +x "$_dir/$_CMD.tmp"
+      mv "$_dir/$_CMD.tmp" "$_dir/$_CMD"
+    fi
   fi
 }
 
@@ -262,7 +277,6 @@ do
 
   case "$ACTION" in
     $ACTION_INSTALL)
-#      dir=$_arg_dir
       # we manually replace leading ~ with $HOME, otherwise quoting wreaks havoc on the dirs
       # (as mkdir "~/dir" creates a subdir "~" in the current folder)
       dir="${_arg_dir/#~/$HOME}"
