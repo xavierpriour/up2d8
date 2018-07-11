@@ -226,8 +226,8 @@ download() {
 #    rm $_dir/$_CMD.tmp
   else
     # all ok, we can replace existing
-    chmod +x $_dir/$_CMD.tmp
-    mv $_dir/$_CMD.tmp $_dir/$_CMD
+    chmod +x "$_dir/$_CMD.tmp"
+    mv "$_dir/$_CMD.tmp" "$_dir/$_CMD"
   fi
 }
 
@@ -262,12 +262,16 @@ do
 
   case "$ACTION" in
     $ACTION_INSTALL)
-      dir=$_arg_dir
+#      dir=$_arg_dir
+      # we manually replace leading ~ with $HOME, otherwise quoting wreaks havoc on the dirs
+      # (as mkdir "~/dir" creates a subdir "~" in the current folder)
+      dir="${_arg_dir/#~/$HOME}"
       if [ -z "$dir" ]; then
         echo "directory parameter is mandatory to install a new command, please re-run with --dir <install_dir>"
         exit 1
       fi
-      bin=$_arg_bin
+      # same here, substitute leading ~ to enable defensive quoting
+      bin="${_arg_bin/#~/$HOME}"
 
 #      echo "download $command_to_up $TARGET_VERSION $repo $dir"
 #      exit 99
