@@ -157,6 +157,7 @@ versions["ctop"]='-v'
 
 repos["helm"]='https://github.com/kubernetes/helm'
 releases["helm"]='https://storage.googleapis.com/kubernetes-helm/helm-v${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64.tar.gz'
+versions["helm"]='version --client --short'
 
 ACTION_NOTHING='do nothing'
 ACTION_INSTALL='install'
