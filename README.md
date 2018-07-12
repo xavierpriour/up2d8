@@ -12,9 +12,10 @@ Pre-requisites:
 - bash
 - git
 - curl 
-- commands already installed (ex: docker-compose or docker-machine)
-must be in the path
-- only tested on Linux, so probably not working out of the box on Windows or Mac
+- if some commands aer already installed (ex: docker-compose or docker-machine),
+they must be in the path
+- only tested on Linux, so probably not working out of the box on Windows or Mac.
+PRs most welcome!
 
 Install
 
@@ -34,7 +35,7 @@ Their authors don't want to go through the trouble of building packages for the 
 Yet as a user, I'm tired of wading through git repos just to see if a new version is available,
 download a tarball, extract, hunt for the previous one, and replace it.
 
-So I built `up2d8`, to do it for me.
+So I built `up2d8`, to do it all for me.
 
 ## usage
 
@@ -44,6 +45,8 @@ Update
 - Only one command: `up2d8 docker-compose`
 - Downgrade a command: `up2d8 kompose=1.10.0`
 - Combine: `up2d8 kompose=1.10.0 docker-compose`
+- works on already installed commands.
+If a supported command is in the path, up2d8 will find it and replace with latest version.
 
 Install
 
@@ -52,22 +55,25 @@ Install
 
 Supported commands
 
+- [ctop](https://ctop.sh/)
 - [docker-compose](https://docs.docker.com/compose/)
 - [docker-machine](https://docs.docker.com/machine/)
-- [minikube](https://github.com/kubernetes/minikube)
+- [helm](https://helm.sh/)
 - [kompose](http://kompose.io/)
-- [ctop](https://ctop.sh/)
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
+- [minikube](https://github.com/kubernetes/minikube)
 
 ## roadmap
 
-No promise or dates, but here's what I have in mind for the future
+No promise or dates, but here's what I have in mind for the future,
+in no particular order
 
 - `up2d8 -la` to list commands we can manage
 - gracefully crash if required version does not exist
 - add tests
 - put apps definitions in a separate data file (json maybe) rather than in the middle of the bash code
 - dogfood: up2d8 should keep itself up-to-date
-- more commands: helm,... suggestions most welcome!
+- more commands: suggestions most welcome!
 - rewrite it in go (because bash, well...)
 
 Help needed
