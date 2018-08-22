@@ -210,7 +210,7 @@ decide_action() {
       echo "Missing version command for '$CMD', this is a fatal bug. Please report it to the author."
       exit 1
     fi
-    CURRENT_VERSION=`$CMD $_version_toggle | sed -n "s/^.*\(\([0-9]\+\.\)\{2\}[0-9]\+\).*$/\1/p"`
+    CURRENT_VERSION=`$CMD $_version_toggle | sed -n "s/^[^0-9]*\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*$/\1/p"`
     if [ -z "$CURRENT_VERSION" ]; then
       echo "Unable to parse version output for '$CMD', this is a fatal bug. Please report it to the author."
       exit 1
