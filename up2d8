@@ -193,8 +193,8 @@ decide_action() {
     if [ "$?"  = "0" ]; then
       # we're in a git repo, so let's fetch list of tags then determine latest version.
       # This is slightly complex: 1.10.0 is preferred to 1.9.1 in semver, but incorrectly sorted by a naive 'sort' function...
-      # so we have to fetch all tags, then pad all their version elements to 3 digits, sort, keep 1, then de-pad
-      TARGET_VERSION=`git ls-remote $REPO | grep refs/tags | grep -oP "[0-9]+\.[0-9]+\.[0-9]+$" | sed -e 's/\b[0-9]\b/00&/g; s/\b[0-9]\{2\}\b/0&/g' | sort | tail -n 1 | sed -e 's/\b0*\([0-9][1-9]*\)\b/\1/g'`
+      # so we have to fetch all tags, then pad all their version elements to 3 digits, sort, keep 1, then de-pad properly.
+      TARGET_VERSION=`git ls-remote $REPO | grep refs/tags | grep -oP "[0-9]+\.[0-9]+\.[0-9]+$" | sed -e 's/\b[0-9]\b/00&/g; s/\b[0-9]\{2\}\b/0&/g' | sort | tail -n 1 | sed -e 's/\b0*\([1-9]*[0-9]\)\b/\1/g'`
     else
       # not in a git repo, expect the URL is a file containing just the version itself - might include some vX.Y.Z, extract just X.Y.Z
       TARGET_VERSION=`curl -s "$REPO" | grep -oP "[0-9]+\.[0-9]+\.[0-9]+$"`
