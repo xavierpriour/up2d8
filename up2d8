@@ -314,6 +314,10 @@ do
       full_cmd=`which $command_to_up`
       if [ -L "$full_cmd" ]; then
         dir=`dirname \`readlink $full_cmd\``
+        # if the link points to a relative dir, we need to prepend with link dir itself
+        if [[ "$dir" == .* ]]; then
+          dir="`dirname $full_cmd`/$dir"
+        fi
       else
         dir=`dirname $full_cmd`
       fi
