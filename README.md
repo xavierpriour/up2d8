@@ -53,8 +53,13 @@ Install
 - Use it to install a command: `up2d8 kompose --dir=my/install/directory`
 - Install and link to your bin directory (in $PATH):  `up2d8 kompose --dir=my/install/directory --bin=/usr/bin` 
 
-Supported commands
+Other options
 
+- `up2d8 --help` lists all options
+- `up2d8 --version`
+
+## Supported commands
+   
 - [ctop](https://ctop.sh/)
 - [docker-compose](https://docs.docker.com/compose/)
 - [docker-machine](https://docs.docker.com/machine/)
