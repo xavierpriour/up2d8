@@ -137,42 +137,50 @@ declare -A repos
 declare -A releases
 # mapping of options to get version number: used to determine local version
 declare -A versions
+declare -A versions_pattern
 
 # each command needs an entry in the 3 arrays defined above
 
 repos["ctop"]='https://github.com/bcicen/ctop'
 # https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64
 releases["ctop"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
-versions["ctop"]='-v'
+versions["ctop"]=' -v'
+versions_pattern["ctop"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["docker-compose"]='https://github.com/docker/compose'
 # little trick here, for version 0.12.2 tag is v0.12.2 (notice leading v)
 releases["docker-compose"]='"${_REPO}/releases/download/${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
 versions["docker-compose"]='--version'
+versions_pattern["docker-compose"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["docker-machine"]='https://github.com/docker/machine'
 # little trick here, for version 0.12.2 tag is v0.12.2 (notice leading v)
 releases["docker-machine"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
 versions["docker-machine"]='--version'
+versions_pattern["docker-machine"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["helm"]='https://github.com/kubernetes/helm'
 releases["helm"]='https://storage.googleapis.com/kubernetes-helm/helm-v${_VERSION}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64.tar.gz'
 versions["helm"]='version --client --short'
+versions_pattern["helm"]='s/.*v\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["kompose"]='https://github.com/kubernetes/kompose'
 # kompose has 3 tweaks: 0.12.2 is v0.12.2, ends with amd64, and uname is lowercase only
 releases["kompose"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
 versions["kompose"]='version'
+versions_pattern["kompose"]='s/^\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 # kubectl uses a version file, not repo tags
 repos["kubectl"]='https://storage.googleapis.com/kubernetes-release/release/stable.txt'
 # https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/linux/amd64/kubectl
 releases["kubectl"]='"https://storage.googleapis.com/kubernetes-release/release/v${_VERSION}/bin/`uname -s | tr '[:upper:]' '[:lower:]'`/amd64/${_CMD}"'
 versions["kubectl"]='version --client --short'
+versions_pattern["kubectl"]='s/.*v\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["minikube"]='https://github.com/kubernetes/minikube'
 releases["minikube"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-amd64"'
 versions["minikube"]='version'
+versions_pattern["minikube"]='s/.*v\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 ACTION_NOTHING='do nothing'
 ACTION_INSTALL='install'
@@ -219,7 +227,8 @@ decide_action() {
       echo "Missing version command for '$CMD', this is a fatal bug. Please report it to the author."
       exit 1
     fi
-    CURRENT_VERSION=`$CMD $_version_toggle | sed -n "s/^[^0-9]*\(\([0-9]\+\)\(\.[0-9]\+\)\+\).*$/\1/p"`
+#    CURRENT_VERSION=`$CMD $_version_toggle`
+    CURRENT_VERSION=`$CMD $_version_toggle | sed -n "${versions_pattern["$CMD"]}"`
     if [ -z "$CURRENT_VERSION" ]; then
       echo "Unable to parse version output for '$CMD', this is a fatal bug. Please report it to the author."
       exit 1
