@@ -149,13 +149,13 @@ versions_pattern["ctop"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["docker-compose"]='https://github.com/docker/compose'
 # little trick here, for version 0.12.2 tag is v0.12.2 (notice leading v)
-releases["docker-compose"]='"${_REPO}/releases/download/${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
+releases["docker-compose"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-`uname -m`"'
 versions["docker-compose"]='--version'
 versions_pattern["docker-compose"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
 repos["docker-machine"]='https://github.com/docker/machine'
 # little trick here, for version 0.12.2 tag is v0.12.2 (notice leading v)
-releases["docker-machine"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s`-`uname -m`"'
+releases["docker-machine"]='"${_REPO}/releases/download/v${_VERSION}/${_CMD}-`uname -s | tr '[:upper:]' '[:lower:]'`-`uname -m`"'
 versions["docker-machine"]='--version'
 versions_pattern["docker-machine"]='s/.*version \(\([0-9]\+\)\(\.[0-9]\+\)\+\).*/\1/p'
 
